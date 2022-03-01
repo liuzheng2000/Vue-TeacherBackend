@@ -44,7 +44,7 @@ export default {
         // `/api/answers/${this.pagination.current}/${this.pagination.size}`
                      {
         headers: { Authorization: this.$cookies.get("token") },  //设置的请求头
-        url: `/api/ExamAnswerQuery/answersByTeacherID/${this.pagination.current}/${this.pagination.size}/${this.$cookies.get("cid")}`,
+        url: `/api/AdminBackstage/answersByTeacherID/${this.pagination.current}/${this.pagination.size}`,
         method: "Get",
         }
         // `/api/answersByTeacherID/${this.pagination.current}/${this.pagination.size}/${this.$cookies.get("cid")}`

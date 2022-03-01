@@ -52,7 +52,7 @@ export default {
         this.$axios(
                   {
         headers: { Authorization: this.$cookies.get("token") },  //设置的请求头
-        url:  `/api/Examexam/exams/${this.pagination.current}/${this.pagination.size}/${this.$cookies.get("cid")}`,
+        url:  `/api/AdminBackstage/exams/${this.pagination.current}/${this.pagination.size}`,
         method: "Get",
         }
           // `/api/exams/${this.pagination.current}/${this.pagination.size}/${this.$cookies.get("cid")}`

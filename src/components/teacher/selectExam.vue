@@ -2,20 +2,72 @@
 <template>
   <div class="exam">
     <el-table :data="pagination.records" border>
-      <el-table-column fixed="left" prop="source" label="试卷名称" width="180"></el-table-column>
-      <el-table-column prop="description" label="介绍" width="200"></el-table-column>
-      <el-table-column prop="institute" label="所属学院" width="120"></el-table-column>
-      <el-table-column prop="major" label="所属专业" width="200"></el-table-column>
+      <el-table-column
+        fixed="left"
+        prop="source"
+        label="试卷名称"
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        prop="description"
+        label="介绍"
+        width="200"
+      ></el-table-column>
+      <el-table-column
+        prop="institute"
+        label="所属学院"
+        width="120"
+      ></el-table-column>
+      <el-table-column
+        prop="major"
+        label="所属专业"
+        width="200"
+      ></el-table-column>
       <el-table-column prop="grade" label="年级" width="100"></el-table-column>
-      <el-table-column prop="examDate" label="考试日期" width="120"></el-table-column>
-      <el-table-column prop="totalTime" label="持续时间" width="120"></el-table-column>
-      <el-table-column prop="totalScore" label="总分" width="120"></el-table-column>
-      <el-table-column prop="type" label="试卷类型" width="120"></el-table-column>
-      <el-table-column prop="tips" label="考生提示" width="400"></el-table-column>
+      <el-table-column
+        prop="examDate"
+        label="考试日期"
+        width="120"
+      ></el-table-column>
+      <el-table-column
+        prop="totalTime"
+        label="持续时间"
+        width="120"
+      ></el-table-column>
+      <el-table-column
+        prop="totalScore"
+        label="总分"
+        width="120"
+      ></el-table-column>
+      <el-table-column
+        prop="type"
+        label="试卷类型"
+        width="120"
+      ></el-table-column>
+      <el-table-column
+        prop="tips"
+        label="考生提示"
+        width="400"
+      ></el-table-column>
+      <el-table-column
+        prop="teacherName"
+        label="创建老师"
+        width="400"
+      ></el-table-column>
       <el-table-column fixed="right" label="操作" width="150">
         <template slot-scope="scope">
-          <el-button @click="edit(scope.row.examCode)" type="primary" size="small">编辑</el-button>
-          <el-button @click="deleteRecord(scope.row.examCode)" type="danger" size="small">删除</el-button>
+          <el-button
+            @click="edit(scope.row.examCode)"
+            type="primary"
+            size="small"
+            >编辑</el-button
+          >
+          <el-button
+            @click="deleteRecord(scope.row.examCode)"
+            type="danger"
+            size="small"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -26,14 +78,17 @@
       :page-sizes="[4, 8, 10, 20]"
       :page-size="pagination.size"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="pagination.total" class="page">
+      :total="pagination.total"
+      class="page"
+    >
     </el-pagination>
     <!-- 编辑对话框-->
     <el-dialog
       title="编辑试卷信息"
       :visible.sync="dialogVisible"
       width="30%"
-      :before-close="handleClose">
+      :before-close="handleClose"
+    >
       <section class="update">
         <el-form ref="form" :model="form" label-width="80px">
           <el-form-item label="试卷名称">
@@ -53,7 +108,12 @@
           </el-form-item>
           <el-form-item label="考试日期">
             <el-col :span="11">
-              <el-date-picker type="date" placeholder="选择日期" v-model="form.examDate" style="width: 100%;"></el-date-picker>
+              <el-date-picker
+                type="date"
+                placeholder="选择日期"
+                v-model="form.examDate"
+                style="width: 100%"
+              ></el-date-picker>
             </el-col>
           </el-form-item>
           <el-form-item label="持续时间">
@@ -67,6 +127,17 @@
           </el-form-item>
           <el-form-item label="考生提示">
             <el-input type="textarea" v-model="form.tips"></el-input>
+          </el-form-item>
+          <el-form-item label="教师名称">
+            <el-select v-model="form.establishTeacherID" placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.teacherId"
+                :label="item.teacherName"
+                :value="item.teacherId"
+              >
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-form>
       </section>
@@ -83,111 +154,123 @@ export default {
   data() {
     return {
       form: {}, //保存点击以后当前试卷的信息
-      pagination: { //分页后的考试信息
+      pagination: {
+        //分页后的考试信息
         current: 1, //当前页
         total: null, //记录条数
-        size: 4 //每页条数
+        size: 4, //每页条数
       },
-      dialogVisible: false
-    }
+      dialogVisible: false,
+    };
   },
   created() {
-    this.getExamInfo()
+    this.getExamInfo(),
+    this.getTeacherNameAndId();
   },
   methods: {
-    edit(examCode) { //编辑试卷
-      this.dialogVisible = true
-      this.$axios(
-        
-        {
+      getTeacherNameAndId(){
+      this.$axios({
         headers: { Authorization: this.$cookies.get("token") },  //设置的请求头
-        url:`/api/Examexam/exam/${examCode}`,
-        method: "Get",
+        url: '/api/ExamTeacher/teacherNameAndTeacherId',
+        method: 'Get',
+      }).then(res => {
+        if(res.data.code == 200) {
+            this.options=res.data.data
+            console.log(this.options);
+        }
+      })
+    },
+    edit(examCode) {
+      //编辑试卷
+      this.dialogVisible = true;
+      this.$axios(
+        {
+          headers: { Authorization: this.$cookies.get("token") }, //设置的请求头
+          url: `/api/Examexam/exam/${examCode}`,
+          method: "Get",
         }
 
         // `/api/exam/${examCode}`
-        
-        ).then(res => { //根据试卷id请求后台
-        if(res.data.code == 200) {
-          this.form = res.data.data
+      ).then((res) => {
+        //根据试卷id请求后台
+        if (res.data.code == 200) {
+          this.form = res.data.data;
         }
-      })
+      });
     },
-    handleClose(done) { //关闭提醒
-      this.$confirm('确认关闭？')
-        .then(_ => {
+    handleClose(done) {
+      //关闭提醒
+      this.$confirm("确认关闭？")
+        .then((_) => {
           done();
-        }).catch(_ => {});
+        })
+        .catch((_) => {});
     },
-    submit() { //提交修改后的试卷信息
-      this.dialogVisible = false
+    submit() {
+      //提交修改后的试卷信息
+      this.dialogVisible = false;
       this.$axios({
-        headers: { Authorization: this.$cookies.get("token") },  //设置的请求头
-        url: '/api/Examexam/PutExam',
-        method: 'Post',
+        headers: { Authorization: this.$cookies.get("token") }, //设置的请求头
+        url: "/api/AdminBackstage/PutExam",
+        method: "Post",
         data: {
-          ...this.form
+          ...this.form,
+        },
+      }).then((res) => {
+        if (res.data.code == 200) {
+          this.$message({
+            //成功修改提示
+            message: "更新成功",
+            type: "success",
+          });
         }
-      }).then(res => {
-        if(res.data.code == 200) {
-          this.$message({ //成功修改提示
-            message: '更新成功',
-            type: 'success'
-          })
-        }
-        this.getExamInfo()
-      })
+        this.getExamInfo();
+      });
     },
     deleteRecord(examCode) {
-      this.$confirm("确定删除该记录吗,该操作不可逆！！！","删除提示",{
-        confirmButtonText: '确定删除',
-        cancelButtonText: '算了,留着',
-        type: 'danger'
-      }).then(()=> { //确认删除
-        this.$axios({
-          headers: { Authorization: this.$cookies.get("token") },  //设置的请求头
-          url: `/api/Examexam/DeExam/${examCode}`,
-          method: 'post',
-        }).then(res => {
-          this.getExamInfo()
-        })
-      }).catch(() => {
-
+      this.$confirm("确定删除该记录吗,该操作不可逆！！！", "删除提示", {
+        confirmButtonText: "确定删除",
+        cancelButtonText: "算了,留着",
+        type: "danger",
       })
+        .then(() => {
+          //确认删除
+          this.$axios({
+            headers: { Authorization: this.$cookies.get("token") }, //设置的请求头
+            url: `/api/Examexam/DeExam/${examCode}`,
+            method: "post",
+          }).then((res) => {
+            this.getExamInfo();
+          });
+        })
+        .catch(() => {});
     },
 
-
-
-
-
-    getExamInfo() { //分页查询所有试卷信息
+    getExamInfo() {
+      //分页查询所有试卷信息
       this.$axios(
-             {
-        headers: { Authorization: this.$cookies.get("token") },  //设置的请求头
-        url:  `/api/Examexam/exams/${this.pagination.current}/${this.pagination.size}/${this.$cookies.get("cid")}`,
-        method: "Get",
+        {
+          headers: { Authorization: this.$cookies.get("token") }, //设置的请求头
+          url: `/api/AdminBackstage/exams/${this.pagination.current}/${this.pagination.size}`,
+          method: "Get",
         }
         // `/api/exams/${this.pagination.current}/${this.pagination.size}/${this.$cookies.get("cid")}`
-        ).then(res => {
-        this.pagination = res.data.data
-      }).catch(error => {
-      })
+      )
+        .then((res) => {
+          this.pagination = res.data.data;
+        })
+        .catch((error) => {});
     },
-
-
-
-
-
 
     //改变当前记录条数
     handleSizeChange(val) {
-      this.pagination.size = val
-      this.getExamInfo()
+      this.pagination.size = val;
+      this.getExamInfo();
     },
     //改变当前页码，重新发送请求
     handleCurrentChange(val) {
-      this.pagination.current = val
-      this.getExamInfo()
+      this.pagination.current = val;
+      this.getExamInfo();
     },
   },
 };
@@ -201,7 +284,7 @@ export default {
     justify-content: center;
     align-items: center;
   }
-  .edit{
+  .edit {
     margin-left: 20px;
   }
 }

@@ -47,13 +47,13 @@ export default {
           // `/${this.pagination.current}/${this.pagination.size}/${studentId}`
         headers: { Authorization: this.$cookies.get("token") },  //设置的请求头
         // url: '/api/ScoreBySubjectToTeacher',
-        url: '/api/ExamScore/ScoreBySubjectToTeacher',
+        url: '/api/AdminBackstage/ScoreBySubjectToAdmin',
         method: 'post',
         data: {
           current:this.pagination.current,
           size:this.pagination.size,
           subjectID:subjectID,
-          teacherID:this.$cookies.get("cid")
+          // teacherID:this.$cookies.get("cid")
         }}
         )  
           .then(res => {

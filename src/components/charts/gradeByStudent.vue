@@ -46,13 +46,13 @@ export default {
         this.$axios({
           // `/${this.pagination.current}/${this.pagination.size}/${studentId}`
         headers: { Authorization: this.$cookies.get("token") },  //设置的请求头
-        url: '/api/ExamScore/ScoreByStudentToTeacher',
+        url: '/api/AdminBackstage/ScoreByStudentToAdmin',
         method: 'post',
         data: {
           current:this.pagination.current,
           size:this.pagination.size,
           studentId:studentId,
-          teacherID:this.$cookies.get("cid")
+          // teacherID:this.$cookies.get("cid")
         }}
         )  
           .then(res => {

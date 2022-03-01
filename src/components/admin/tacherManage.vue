@@ -2,17 +2,44 @@
 <template>
   <div class="all">
     <el-table :data="pagination.records" border>
-      <el-table-column fixed="left" prop="teacherName" label="姓名" width="180"></el-table-column>
-      <el-table-column prop="institute" label="学院" width="200"></el-table-column>
+      <el-table-column
+        fixed="left"
+        prop="teacherName"
+        label="姓名"
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        prop="institute"
+        label="学院"
+        width="200"
+      ></el-table-column>
       <el-table-column prop="sex" label="性别" width="120"></el-table-column>
-      <el-table-column prop="tel" label="联系方式" width="120"></el-table-column>
+      <el-table-column
+        prop="tel"
+        label="联系方式"
+        width="120"
+      ></el-table-column>
       <el-table-column prop="email" label="密码" width="120"></el-table-column>
-      <el-table-column prop="cardId" label="身份证号" width="120"></el-table-column>
+      <el-table-column
+        prop="cardId"
+        label="身份证号"
+        width="120"
+      ></el-table-column>
       <el-table-column prop="type" label="职称" width="120"></el-table-column>
       <el-table-column fixed="right" label="操作" width="150">
         <template slot-scope="scope">
-          <el-button @click="checkGrade(scope.row.teacherId)" type="primary" size="small">编辑</el-button>
-          <el-button @click="deleteById(scope.row.teacherId)" type="danger" size="small">删除</el-button>
+          <el-button
+            @click="checkGrade(scope.row.teacherId)"
+            type="primary"
+            size="small"
+            >编辑</el-button
+          >
+          <el-button
+            @click="deleteById(scope.row.teacherId)"
+            type="danger"
+            size="small"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -24,14 +51,16 @@
       :page-size="pagination.size"
       layout="total, sizes, prev, pager, next, jumper"
       :total="pagination.total"
-      class="page">
+      class="page"
+    >
     </el-pagination>
     <!-- 编辑对话框-->
     <el-dialog
       title="编辑试卷信息"
       :visible.sync="dialogVisible"
       width="30%"
-      :before-close="handleClose">
+      :before-close="handleClose"
+    >
       <section class="update">
         <el-form ref="form" :model="form" label-width="80px">
           <el-form-item label="姓名">
@@ -85,9 +114,18 @@ export default {
   methods: {
     getTeacherInfo() {
       //分页查询所有试卷信息
-      this.$axios(`/api/teachers/${this.pagination.current}/${this.pagination.size}`).then(res => {
-        this.pagination = res.data.data;
-      }).catch(error => {});
+      this.$axios(
+        {
+          headers: { Authorization: this.$cookies.get("token") }, //设置的请求头
+          url: `/api/ExamTeacher/teachers/${this.pagination.current}/${this.pagination.size} `,
+          method: "Get",
+        }
+        // `/api/ExamTeacher/teachers/${this.pagination.current}/${this.pagination.size} `
+      )
+        .then((res) => {
+          this.pagination = res.data.data;
+        })
+        .catch((error) => {});
     },
     //改变当前记录条数
     handleSizeChange(val) {
@@ -99,54 +137,66 @@ export default {
       this.pagination.current = val;
       this.getTeacherInfo();
     },
-    checkGrade(teacherId) { //修改教师信息
-      this.dialogVisible = true
-      this.$axios(`/api/teacher/${teacherId}`).then(res => {
-        this.form = res.data.data
-      })
-    },
-    deleteById(teacherId) { //删除当前学生
-      this.$confirm("确定删除当前教师吗？删除后无法恢复","Warning",{
-        confirmButtonText: '确定删除',
-        cancelButtonText: '算了,留着吧',
-        type: 'danger'
-      }).then(()=> { //确认删除
-        this.$axios({
-          url: `/api/teacher/${teacherId}`,
-          method: 'delete',
-        }).then(res => {
-          this.getTeacherInfo()
-        })
-      }).catch(() => {
-
-      })
-    },
-    submit() { //提交更改
-      this.dialogVisible = false
+    checkGrade(teacherId) {
+      //修改教师信息
+      this.dialogVisible = true;
       this.$axios({
-        url: '/api/teacher',
-        method: 'put',
-        data: {
-          ...this.form
-        }
-      }).then(res => {
-        console.log(res)
-        if(res.data.code ==200) {
-          this.$message({
-            message: '更新成功',
-            type: 'success'
-          })
-        }
-        this.getTeacherInfo()
+        headers: { Authorization: this.$cookies.get("token") }, //设置的请求头
+        url: `/api/ExamTeacher/teacher/${teacherId}`,
+        method: "Get",
+      }).then((res) => {
+        this.form = res.data.data;
+      });
+    },
+    deleteById(teacherId) {
+      //删除当前学生
+      this.$confirm("确定删除当前教师吗？删除后无法恢复", "Warning", {
+        confirmButtonText: "确定删除",
+        cancelButtonText: "算了,留着吧",
+        type: "danger",
       })
+        .then(() => {
+          //确认删除
+          this.$axios({
+            headers: { Authorization: this.$cookies.get("token") }, //设置的请求头
+            url: `/api/ExamTeacher/delTeacher/${teacherId}`,
+            method: "post",
+          }).then((res) => {
+            this.getTeacherInfo();
+          });
+        })
+        .catch(() => {});
     },
-    handleClose(done) { //关闭提醒
-      this.$confirm('确认关闭？')
-        .then(_ => {
+    submit() {
+      //提交更改
+      this.dialogVisible = false;
+      this.$axios({
+        headers: { Authorization: this.$cookies.get("token") }, //设置的请求头
+        url: "/api/ExamTeacher/PutTeacher",
+        method: "post",
+        data: {
+          ...this.form,
+        },
+      }).then((res) => {
+        console.log(res);
+        if (res.data.code == 200) {
+          this.$message({
+            message: "更新成功",
+            type: "success",
+          });
+        }
+        this.getTeacherInfo();
+      });
+    },
+    handleClose(done) {
+      //关闭提醒
+      this.$confirm("确认关闭？")
+        .then((_) => {
           done();
-        }).catch(_ => {});
+        })
+        .catch((_) => {});
     },
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>
