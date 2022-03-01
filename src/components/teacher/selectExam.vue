@@ -1,9 +1,9 @@
 //查询所有考试
 <template>
-  <div class="exam">
-    <el-table :data="pagination.records" border>
-      <el-table-column
-        fixed="left"
+  <div  class="exam">
+    <el-table  id="examInfo"  :data="pagination.records" border>
+      <el-table-column  
+        class="examInfoSource"
         prop="source"
         label="试卷名称"
         width="180"
@@ -52,9 +52,9 @@
       <el-table-column
         prop="teacherName"
         label="创建老师"
-        width="400"
+        width="100"
       ></el-table-column>
-      <el-table-column fixed="right" label="操作" width="150">
+      <el-table-column  label="操作" width="150">
         <template slot-scope="scope">
           <el-button
             @click="edit(scope.row.examCode)"
@@ -146,10 +146,15 @@
         <el-button type="primary" @click="submit()">确 定</el-button>
       </span>
     </el-dialog>
+    <el-button @click="exportExcel()" type="primary" size="small"
+      >导出</el-button
+    >
   </div>
 </template>
 
 <script>
+// import { FileSaver } from "file-saver";
+import * as XLSX from "xlsx/xlsx.mjs";
 export default {
   data() {
     return {
@@ -164,21 +169,38 @@ export default {
     };
   },
   created() {
-    this.getExamInfo(),
-    this.getTeacherNameAndId();
+    this.getExamInfo(), this.getTeacherNameAndId();
   },
   methods: {
-      getTeacherNameAndId(){
+    exportExcel() {
+      // Acquire Data (reference to the HTML table)
+    
+      // var table_elt = document.getElementById("examInfo");
+
+      // Extract Data (create a workbook object from the table)
+      // var workbook = XLSX.utils.table_to_book(table_elt);
+      var workbook = XLSX.utils.book_new();
+      // Process Data (add a new row)
+      var ws =  XLSX.utils.table_to_sheet(document.getElementById('examInfo'));
+      // XLSX.utils.sheet_add_aoa(ws, [["Created " + new Date().toISOString()]], {
+      //   origin: -1,
+      // });
+      XLSX.utils.book_append_sheet(workbook, ws, "Sheet1");
+      // Package and Release Data (`writeFile` tries to write and save an XLSB file)
+      XLSX.writeFile(workbook, "考试安排.xlsb");
+    },
+
+    getTeacherNameAndId() {
       this.$axios({
-        headers: { Authorization: this.$cookies.get("token") },  //设置的请求头
-        url: '/api/ExamTeacher/teacherNameAndTeacherId',
-        method: 'Get',
-      }).then(res => {
-        if(res.data.code == 200) {
-            this.options=res.data.data
-            console.log(this.options);
+        headers: { Authorization: this.$cookies.get("token") }, //设置的请求头
+        url: "/api/ExamTeacher/teacherNameAndTeacherId",
+        method: "Get",
+      }).then((res) => {
+        if (res.data.code == 200) {
+          this.options = res.data.data;
+          console.log(this.options);
         }
-      })
+      });
     },
     edit(examCode) {
       //编辑试卷
@@ -288,4 +310,5 @@ export default {
     margin-left: 20px;
   }
 }
+
 </style>
