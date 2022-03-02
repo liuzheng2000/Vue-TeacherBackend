@@ -1,9 +1,8 @@
 // 教师管理页面
 <template>
   <div class="all">
-    <el-table :data="pagination.records" border>
+    <el-table :data="pagination.records" border id="teacher">
       <el-table-column
-        fixed="left"
         prop="teacherName"
         label="姓名"
         width="180"
@@ -26,7 +25,7 @@
         width="120"
       ></el-table-column>
       <el-table-column prop="type" label="职称" width="120"></el-table-column>
-      <el-table-column fixed="right" label="操作" width="150">
+      <el-table-column label="操作" width="150">
         <template slot-scope="scope">
           <el-button
             @click="checkGrade(scope.row.teacherId)"
@@ -91,10 +90,14 @@
         <el-button type="primary" @click="submit()">确 定</el-button>
       </span>
     </el-dialog>
+      <el-button @click="exportExcel()" type="primary" size="small"
+      >导出
+    </el-button>
   </div>
 </template>
 
 <script>
+import * as XLSX from "xlsx/xlsx.mjs";
 export default {
   data() {
     return {
@@ -112,6 +115,26 @@ export default {
     this.getTeacherInfo();
   },
   methods: {
+        exportExcel() {
+      // Acquire Data (reference to the HTML table)
+
+      // var table_elt = document.getElementById("examInfo");
+
+      // Extract Data (create a workbook object from the table)
+      // var workbook = XLSX.utils.table_to_book(table_elt);
+      var workbook = XLSX.utils.book_new();
+      // Process Data (add a new row)
+      var ws = XLSX.utils.table_to_sheet(
+        document.getElementById("teacher")
+      );
+      // XLSX.utils.sheet_add_aoa(ws, [["Created " + new Date().toISOString()]], {
+      //   origin: -1,
+      // });
+      XLSX.utils.book_append_sheet(workbook, ws, "Sheet1");
+      // Package and Release Data (`writeFile` tries to write and save an XLSB file)
+      XLSX.writeFile(workbook, "后台导出教师明细.xlsb");
+    },
+
     getTeacherInfo() {
       //分页查询所有试卷信息
       this.$axios(
