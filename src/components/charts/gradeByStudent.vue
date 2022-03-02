@@ -2,8 +2,8 @@
 <template>
 
   <div class="all">
-    <el-table  :data="pagination.records" border >
-      <el-table-column fixed="left" prop="studentName" label="姓名" width="400"></el-table-column>
+    <el-table  :data="pagination.records" border id="gradeScore">
+      <el-table-column prop="studentName" label="姓名" width="400"></el-table-column>
       <el-table-column prop="subjectName" label="科目" width="380"></el-table-column>
       <el-table-column prop="score" label="成绩" width="380"></el-table-column>
     </el-table>
@@ -18,11 +18,13 @@
       class="page"
     ></el-pagination>
     <el-button @click="getBack()" type="primary" size="small">返回</el-button>
+     <el-button @click="exportExcel()" type="primary" size="small">打印</el-button>
   </div>
 
 </template>
 
 <script>
+import * as XLSX from "xlsx/xlsx.mjs";
 export default {
   data() {
     return {
@@ -38,6 +40,25 @@ export default {
     this.getStudentScoreByTeacher();
   },
   methods: {
+    exportExcel() {
+      // Acquire Data (reference to the HTML table)
+
+      // var table_elt = document.getElementById("examInfo");
+
+      // Extract Data (create a workbook object from the table)
+      // var workbook = XLSX.utils.table_to_book(table_elt);
+      var workbook = XLSX.utils.book_new();
+      // Process Data (add a new row)
+      var ws = XLSX.utils.table_to_sheet(
+        document.getElementById("gradeScore")
+      );
+      // XLSX.utils.sheet_add_aoa(ws, [["Created " + new Date().toISOString()]], {
+      //   origin: -1,
+      // });
+      XLSX.utils.book_append_sheet(workbook, ws, "Sheet1");
+      // Package and Release Data (`writeFile` tries to write and save an XLSB file)
+      XLSX.writeFile(workbook, "学生成绩单.xlsb");
+    },
 
     getStudentScoreByTeacher() {
     let studentId = this.$route.query.studentId

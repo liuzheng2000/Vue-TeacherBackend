@@ -147,8 +147,8 @@
       </span>
     </el-dialog>
     <el-button @click="exportExcel()" type="primary" size="small"
-      >导出</el-button
-    >
+      >导出
+    </el-button>
   </div>
 </template>
 
