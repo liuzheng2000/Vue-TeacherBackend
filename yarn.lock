@@ -6472,6 +6472,11 @@
     "renderkid" "^2.0.1"
     "utila" "~0.4"
 
+"print-js@^1.6.0":
+  "integrity" "sha512-BfnOIzSKbqGRtO4o0rnj/K3681BSd2QUrsIZy/+WdCIugjIswjmx3lDEZpXB2ruGf9d4b3YNINri81+J0FsBWg=="
+  "resolved" "https://registry.npmmirror.com/print-js/-/print-js-1.6.0.tgz"
+  "version" "1.6.0"
+
 "printj@~1.2.2":
   "integrity" "sha512-sanczS6xOJOg7IKDvi4sGOUOe7c1tsEzjwlLFH/zgwx/uyImVM9/rgBkc8AfiQa/Vg54nRd8mkm9yI7WV/O+WA=="
   "resolved" "https://registry.npmmirror.com/printj/-/printj-1.2.3.tgz"

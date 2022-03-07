@@ -1,8 +1,8 @@
 //查询所有考试
 <template>
-  <div  class="exam">
-    <el-table  id="examInfo"  :data="pagination.records" border>
-      <el-table-column  
+  <div class="exam" id="examPrintJS">
+    <el-table id="examInfo" :data="pagination.records" border>
+      <el-table-column
         class="examInfoSource"
         prop="source"
         label="试卷名称"
@@ -54,7 +54,7 @@
         label="创建老师"
         width="100"
       ></el-table-column>
-      <el-table-column  label="操作" width="150">
+      <el-table-column label="操作" width="150">
         <template slot-scope="scope">
           <el-button
             @click="edit(scope.row.examCode)"
@@ -149,11 +149,13 @@
     <el-button @click="exportExcel()" type="primary" size="small"
       >导出
     </el-button>
+    <el-button @click="goPrint()" type="primary" size="small">打印 </el-button>
   </div>
 </template>
 
 <script>
 // import { FileSaver } from "file-saver";
+import printJS from "print-js";
 import * as XLSX from "xlsx/xlsx.mjs";
 export default {
   data() {
@@ -172,16 +174,47 @@ export default {
     this.getExamInfo(), this.getTeacherNameAndId();
   },
   methods: {
+    goPrint() {
+      let printJSONTemp = JSON.stringify(this.pagination.records);
+      console.log(printJSONTemp);
+      console.log("打印");
+       this.$axios({
+        headers: { Authorization: this.$cookies.get("token") }, //设置的请求头
+        url: "/api/AdminBackstage/printPdf",
+        method: "Post",
+        data: {
+            JsonPdf : printJSONTemp
+        },
+        responseType: "blob",
+      }).then((res) => {
+          const link = document.createElement('a')
+          let blob = new Blob([res.data], { type: 'application/pdf' })
+          link.style.display = 'none'
+          link.href = URL.createObjectURL(blob)
+          let num = ''
+          for (let i = 0; i < 10; i++) {
+            num += Math.ceil(Math.random() * 10)
+          }
+          link.setAttribute('download', '考试信息打印' + num )
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+      })
+      .catch((err) => {
+
+      });
+    },
+
     exportExcel() {
       // Acquire Data (reference to the HTML table)
-    
+
       // var table_elt = document.getElementById("examInfo");
 
       // Extract Data (create a workbook object from the table)
       // var workbook = XLSX.utils.table_to_book(table_elt);
       var workbook = XLSX.utils.book_new();
       // Process Data (add a new row)
-      var ws =  XLSX.utils.table_to_sheet(document.getElementById('examInfo'));
+      var ws = XLSX.utils.table_to_sheet(document.getElementById("examInfo"));
       // XLSX.utils.sheet_add_aoa(ws, [["Created " + new Date().toISOString()]], {
       //   origin: -1,
       // });
@@ -310,5 +343,4 @@ export default {
     margin-left: 20px;
   }
 }
-
 </style>
