@@ -66,6 +66,11 @@ export default new Router({
                         import ('@/components/teacher/selectAnswer')
                 },
                 {
+                    path: '/selectAnswerByExam', //查询所有题库
+                    component: () =>
+                        import ('@/components/teacher/selectAnswerByExam')
+                },
+                {
                     path: '/addAnswer', //增加题库主界面
                     component: () =>
                         import ('@/components/teacher/addAnswer')
@@ -94,7 +99,17 @@ export default new Router({
                     path: '/addTeacher',
                     component: () =>
                         import ('@/components/admin/addTeacher')
-                }
+                },
+                {
+                    path: '/studentAndExam', //考试人员管理列表
+                    component: () =>
+                        import ('@/components/teacher/studentAndExam')
+                },
+                {
+                    path: '/studentAndExamChildren', //考试人员管理列表子表
+                    component: () =>
+                        import ('@/components/teacher/studentAndExamChildren')
+                },
             ]
         },
 

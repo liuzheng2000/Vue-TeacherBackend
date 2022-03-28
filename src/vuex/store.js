@@ -17,7 +17,7 @@ const state = {
             index: '2',
             title: '题库管理',
             icon: 'icon-tiku',
-            content: [{ item1: '功能介绍', path: '/answerDescription' }, { item2: '所有题库', path: '/selectAnswer' }
+            content: [{ item1: '功能介绍', path: '/answerDescription' }, { item2: '所有题库', path: '/selectAnswerByExam' }
                 // , { item3: '增加题库', path: '/addAnswer' }, { path: '/addAnswerChildren' }
             ],
         },
@@ -32,6 +32,12 @@ const state = {
             title: '学生管理',
             icon: 'icon-role',
             content: [{ item1: '学生管理', path: '/studentManage' }, { item2: '添加学生', path: '/addStudent' }],
+        },
+        {
+            index: '6',
+            title: '学生考试管理',
+            icon: 'icon-role',
+            content: [{ item1: '考试学生', path: '/studentAndExam' }],
         },
         // {
         //   index: '5',
