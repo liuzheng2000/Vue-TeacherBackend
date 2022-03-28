@@ -51,7 +51,7 @@
     </el-pagination>
     <!-- 编辑对话框-->
     <el-dialog
-      title="编辑试卷信息"
+      title="编辑学生信息"
       :visible.sync="dialogVisible"
       width="30%"
       :before-close="handleClose"
@@ -79,11 +79,14 @@
           <el-form-item label="电话号码">
             <el-input v-model="form.tel"></el-input>
           </el-form-item>
+          <el-form-item label="密码">
+            <el-input v-model="form.pwd"></el-input>
+          </el-form-item>
         </el-form>
       </section>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submit()">确 定</el-button>
+        <el-button type="primary" @click="submit(form.studentId)">确 定</el-button>
       </span>
     </el-dialog>
     <el-button @click="exportExcel()" type="primary" size="small"
@@ -94,7 +97,7 @@
 
 <script>
 import * as XLSX from "xlsx/xlsx.mjs";
-
+import {encrypt} from '../../utils/jsencrypt'
 export default {
   data() {
     return {
@@ -168,6 +171,7 @@ export default {
         // `/api/student/${studentId}`
       ).then((res) => {
         this.form = res.data.data;
+        console.log(this.form);
       });
     },
     deleteById(studentId) {
@@ -189,7 +193,7 @@ export default {
         })
         .catch(() => {});
     },
-    submit() {
+    submit(studentId) {
       //提交更改
       this.dialogVisible = false;
       this.$axios({
@@ -197,7 +201,19 @@ export default {
         url: "/api/stu/PutStudent",
         method: "post",
         data: {
-          ...this.form,
+          studentName: this.form.studentName,
+          grade: this.form.grade,
+          major: this.form.major,
+          clazz: this.form.clazz,
+          institute: this.form.institute,
+          tel: this.form.tel,
+          email: this.form.email,
+          pwd: encrypt(this.form.pwd),
+          cardId: this.form.cardId,
+          sex: this.form.sex,
+          role: this.form.role,
+          teacherId: this.form.teacherId,
+          studentId: studentId
         },
       }).then((res) => {
         console.log(res);

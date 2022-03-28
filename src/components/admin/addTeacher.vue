@@ -14,6 +14,9 @@
       <el-form-item label="电话号码">
         <el-input v-model="form.tel"></el-input>
       </el-form-item>
+      <el-form-item label="邮箱">
+        <el-input v-model="form.email"></el-input>
+      </el-form-item>
       <el-form-item label="密码">
         <el-input v-model="form.pwd"></el-input>
       </el-form-item>
@@ -32,6 +35,7 @@
 </template>
 
 <script>
+import {encrypt} from '../../utils/jsencrypt'
 export default {
   data() {
     return {
@@ -59,7 +63,17 @@ export default {
         url: "/api/ExamTeacher/teacher",
         method: "post",
         data: {
-          ...this.form,
+          teacherName: this.form.teacherName,
+          institute: this.form.institute,
+          sex: this.form.sex,
+          tel: this.form.institute,
+          email: this.form.email,
+          pwd: encrypt(this.form.pwd),
+          cardId: this.form.cardId,
+          sex: this.form.sex,
+          role: this.form.role,
+          type: this.form.type,
+     
         },
       }).then((res) => {
         if (res.data.code == 200) {

@@ -18,7 +18,7 @@
         label="联系方式"
         width="120"
       ></el-table-column>
-      <el-table-column prop="email" label="密码" width="120"></el-table-column>
+      <el-table-column prop="pwd" label="密码" width="120"></el-table-column>
       <el-table-column
         prop="cardId"
         label="身份证号"
@@ -87,7 +87,7 @@
       </section>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submit()">确 定</el-button>
+        <el-button type="primary" @click="submit(form.teacherId)">确 定</el-button>
       </span>
     </el-dialog>
       <el-button @click="exportExcel()" type="primary" size="small"
@@ -98,6 +98,7 @@
 
 <script>
 import * as XLSX from "xlsx/xlsx.mjs";
+import {encrypt} from '../../utils/jsencrypt'
 export default {
   data() {
     return {
@@ -190,7 +191,7 @@ export default {
         })
         .catch(() => {});
     },
-    submit() {
+    submit(teacherId) {
       //提交更改
       this.dialogVisible = false;
       this.$axios({
@@ -198,7 +199,17 @@ export default {
         url: "/api/ExamTeacher/PutTeacher",
         method: "post",
         data: {
-          ...this.form,
+          teacherName: this.form.teacherName,
+          institute: this.form.institute,
+          sex: this.form.sex,
+          tel: this.form.institute,
+          email: this.form.email,
+          pwd: encrypt(this.form.pwd),
+          cardId: this.form.cardId,
+          sex: this.form.sex,
+          role: this.form.role,
+          type: this.form.type,
+          teacherId: teacherId
         },
       }).then((res) => {
         console.log(res);

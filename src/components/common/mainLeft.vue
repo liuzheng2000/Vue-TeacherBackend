@@ -55,14 +55,14 @@ export default {
     },
     addData() {
       let role = this.$cookies.get("role")
-      if(role == 0) {
-        this.menu.push({
-          index: '5',
-          title: '教师管理',
-          icon: 'icon-Userselect',
-          content:[{item1:'教师管理',path:'/teacherManage'},{item2: '添加教师',path: '/addTeacher'}],
-        })
-      }
+      // if(role == 0) {
+      //   this.menu.push({
+      //     index: '5',
+      //     title: '教师管理',
+      //     icon: 'icon-Userselect',
+      //     content:[{item1:'教师管理',path:'/teacherManage'},{item2: '添加教师',path: '/addTeacher'}],
+      //   })
+      // }
     }
   },
   store

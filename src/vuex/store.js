@@ -34,10 +34,16 @@ const state = {
             content: [{ item1: '学生管理', path: '/studentManage' }, { item2: '添加学生', path: '/addStudent' }],
         },
         {
-            index: '6',
+            index: '5',
             title: '学生考试管理',
             icon: 'icon-role',
             content: [{ item1: '考试学生', path: '/studentAndExam' }],
+        },
+        {
+            index: '6',
+            title: '教师管理',
+            icon: 'icon-Userselect',
+            content: [{ item1: '教师管理', path: '/teacherManage' }, { item2: '添加教师', path: '/addTeacher' }],
         },
         // {
         //   index: '5',
